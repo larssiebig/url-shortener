@@ -3,20 +3,35 @@ package repository
 import (
 	"context"
 	"log"
+	"os"
 
 	"github.com/jackc/pgx/v4"
+	"github.com/joho/godotenv"
 )
 
 var db *pgx.Conn
 
 func InitDB() {
-	var err error
-	db, err = pgx.Connect(context.Background(), "postgres://user:pass@localhost:5432/shortener")
+	// Load .env file
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	// Get the DATABASE_URL from environment variables
+	dbURL := os.Getenv("DATABASE_URL")
+	if dbURL == "" {
+		log.Fatal("DATABASE_URL is not set in .env")
+	}
+
+	// Connect to the database
+	db, err = pgx.Connect(context.Background(), dbURL)
 	if err != nil {
 		log.Fatal("Database connection failed:", err)
 	}
 	log.Println("Connected to PostgreSQL")
 }
+
 
 // SaveURL stores a URL mapping in the database
 func SaveURL(shortCode, longURL string) {
