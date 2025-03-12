@@ -54,10 +54,6 @@ span
 
 **Response:**
 
-```json
-span
-```
-
 ```shell
 curl -L http://localhost:8080/abc123
 ```
