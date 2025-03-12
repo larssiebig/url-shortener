@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  # Go Application
+  app:
+    build: .
+    container_name: url-shortener-app
+    environment:
+      - DATABASE_URL=postgres://larssiebig:test12345@db:5432/shortener?sslmode=disable
+      - REDIS_URL=redis:6379
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - redis
+
+  # PostgreSQL Database
+  db:
+    image: postgres:latest
+    container_name: url-shortener-db
+    environment:
+      POSTGRES_USER: larssiebig
+      POSTGRES_PASSWORD: test12345
+      POSTGRES_DB: shortener
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  # Redis
+  redis:
+    image: redis:latest
+    container_name: url-shortener-redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  db-data:

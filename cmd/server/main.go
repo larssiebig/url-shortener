@@ -4,12 +4,19 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"github.com/larssiebig/url-shortener/internal/cache"
 	"github.com/larssiebig/url-shortener/internal/handlers"
 	"github.com/larssiebig/url-shortener/internal/repository"
 )
 
 func main() {
+	// Load .env file
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	// Initialize database and cache
 	repository.InitDB()
 	cache.InitRedis()

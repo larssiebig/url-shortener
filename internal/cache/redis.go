@@ -4,7 +4,6 @@ import (
 	"context"
 	"log"
 	"os"
-	"time"
 
 	"github.com/go-redis/redis/v8"
 	"github.com/joho/godotenv"
@@ -38,17 +37,4 @@ func InitRedis() {
 		log.Fatal("Redis connection failed:", err)
 	}
 	log.Println("Connected to Redis")
-}
-
-
-func CacheURL(shortURL, longURL string) {
-	rdb.Set(ctx, shortURL, longURL, 24*time.Hour)
-}
-
-func GetCachedURL(shortURL string) (string, error) {
-	val, err := rdb.Get(ctx, shortURL).Result()
-	if err == redis.Nil {
-		return "", nil
-	}
-	return val, err
 }
