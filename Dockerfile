@@ -1,5 +1,5 @@
 # Step 1: Build the Go application
-FROM golang:latest AS builder
+FROM --platform=linux/arm64 golang:latest AS builder
 
 WORKDIR /app
 
@@ -12,14 +12,14 @@ RUN go mod tidy
 # Copy the source code into the container
 COPY . .
 
-# Build the Go application for ARM-based architecture (arm64) or amd64 if you're on Intel
+# Build the Go application specifically for arm64
 RUN GOOS=linux GOARCH=arm64 go build -o main ./cmd/server
 
 # Step 2: Create the final image
-FROM alpine:latest
+FROM --platform=linux/arm64 alpine:latest
 
-# Install dependencies like bash and ca-certificates
-RUN apk --no-cache add ca-certificates
+# Install dependencies like bash, ca-certificates, and file command
+RUN apk --no-cache add ca-certificates file
 
 # Copy the compiled binary from the builder image
 COPY --from=builder /app/main /app/
