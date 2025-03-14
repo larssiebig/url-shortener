@@ -14,7 +14,7 @@ var ctx = context.Background()
 
 func InitRedis() {
 	// Load .env file from config directory
-	err := godotenv.Load("./config/.env")
+	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
