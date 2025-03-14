@@ -6,35 +6,32 @@ import (
 	"os"
 
 	"github.com/go-redis/redis/v8"
-	"github.com/joho/godotenv"
 )
 
 var rdb *redis.Client
 var ctx = context.Background()
 
 func InitRedis() {
-	// Load .env file
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
+	redisAddr := os.Getenv("REDIS_ADDR")
+	if redisAddr == "" {
+		log.Fatal("REDIS_ADDR is not set in environment variables")
 	}
 
-	// Get the Redis URL from environment variables
-	redisURL := os.Getenv("REDIS_URL")
-	if redisURL == "" {
-		log.Fatal("REDIS_URL is not set in .env")
-	}
-
-	// Connect to Redis
 	rdb = redis.NewClient(&redis.Options{
-		Addr:     redisURL,
-		Password: "", // Assuming no password for Redis
-		DB:       0,  // Default DB
+		Addr:     redisAddr,
+		Password: "", // No password by default
+		DB:       0, // Default DB index
 	})
 
-	_, err = rdb.Ping(ctx).Result()
+	// Test the Redis connection
+	_, err := rdb.Ping(ctx).Result()
 	if err != nil {
-		log.Fatal("Redis connection failed:", err)
+		log.Fatalf("🚨 Redis connection failed: %v", err)
 	}
-	log.Println("Connected to Redis")
+	log.Println("✅ Connected to Redis")
+}
+
+// GetRedisClient returns the Redis client
+func GetRedisClient() *redis.Client {
+	return rdb
 }

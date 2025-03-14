@@ -1,23 +1,21 @@
-version: "3.8"
-
 services:
   app:
-    build: .
+    build:
+      context: .
+    env_file:
+      - ./config/.env # Pointing to the config directory where your .env file is located
     ports:
       - "8080:8080"
-    env_file:
-      - .env
     depends_on:
       - db
       - redis
 
   db:
     image: postgres:latest
-    restart: always
     environment:
-      POSTGRES_USER: ${DATABASE_USER}
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-      POSTGRES_DB: url_shortener
+      POSTGRES_USER: larssiebig
+      POSTGRES_PASSWORD: test12345
+      POSTGRES_DB: shortener
     ports:
       - "5432:5432"
 

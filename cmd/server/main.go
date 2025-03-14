@@ -1,36 +1,40 @@
-package main
+package cache
 
 import (
+	"context"
 	"log"
+	"os"
 
-	"github.com/gin-gonic/gin"
+	"github.com/go-redis/redis/v8"
 	"github.com/joho/godotenv"
-	"github.com/larssiebig/url-shortener/internal/cache"
-	"github.com/larssiebig/url-shortener/internal/handlers"
-	"github.com/larssiebig/url-shortener/internal/repository"
 )
 
-func main() {
-	// Load .env file
-	err := godotenv.Load()
+var rdb *redis.Client
+var ctx = context.Background()
+
+func InitRedis() {
+	// Load .env file from config directory
+	err := godotenv.Load("./config/.env") // specify path here
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
-	// Initialize database and cache
-	repository.InitDB()
-	cache.InitRedis()
-
-	// Create new Gin router
-	r := gin.Default()
-
-	// Define routes
-	r.POST("/shorten", handlers.ShortenURL)
-	r.GET("/:shortcode", handlers.RedirectURL)
-
-	// Start the server
-	log.Println("Starting server on port 8080...")
-	if err := r.Run(":8080"); err != nil {
-		log.Fatal("Failed to start server:", err)
+	// Get the Redis URL from environment variables
+	redisURL := os.Getenv("REDIS_URL")
+	if redisURL == "" {
+		log.Fatal("REDIS_URL is not set in .env")
 	}
+
+	// Connect to Redis
+	rdb = redis.NewClient(&redis.Options{
+		Addr:     redisURL,
+		Password: "", // Assuming no password for Redis
+		DB:       0,  // Default DB
+	})
+
+	_, err = rdb.Ping(ctx).Result()
+	if err != nil {
+		log.Fatal("Redis connection failed:", err)
+	}
+	log.Println("Connected to Redis")
 }
