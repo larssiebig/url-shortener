@@ -12,8 +12,8 @@ RUN go mod tidy
 # Copy the source code into the container
 COPY . .
 
-# Build the Go application
-RUN GOOS=linux GOARCH=amd64 go build -o main ./cmd/server
+# Build the Go application for ARM-based architecture (arm64) or amd64 if you're on Intel
+RUN GOOS=linux GOARCH=arm64 go build -o main ./cmd/server
 
 # Step 2: Create the final image
 FROM alpine:latest
