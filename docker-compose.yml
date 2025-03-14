@@ -3,7 +3,7 @@ services:
     build:
       context: .
     env_file:
-      - ./config/.env # Pointing to the config directory where your .env file is located
+      - ./config/.env # Ensure this path is correct
     ports:
       - "8080:8080"
     depends_on:

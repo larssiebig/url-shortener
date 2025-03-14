@@ -13,7 +13,7 @@ var db *pgx.Conn
 
 func InitDB() {
 	// Load .env file
-	err := godotenv.Load()
+	err := godotenv.Load("./config/.env")
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
