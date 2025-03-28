@@ -12,9 +12,9 @@ import (
 
 func main() {
 	// Load .env file from the root of the container
-	err := godotenv.Load(".env")
+	err := godotenv.Load("config/.env")
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal("Error loading .env file in main file")
 	}
 
 	// Initialize database and cache

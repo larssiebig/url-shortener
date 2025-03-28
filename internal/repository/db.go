@@ -13,9 +13,9 @@ var db *pgx.Conn
 
 func InitDB() {
 	// Load .env file
-	err := godotenv.Load(".env")
+	err := godotenv.Load("config/.env")
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal("Error loading .env file in db.go")
 	}
 
 	// Get the DATABASE_URL from environment variables
